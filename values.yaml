@@ -116,8 +116,8 @@ gitlab:
         s3ServerAddress: gitlab-minio-svc.gitlab.svc.cluster.local:9000
         cacheShared: true
         s3CachePath: gitlab-runner
-        s3AccessKey: JnZ18f9yx590Y2X8iRpiub34lHaBO2GnXxzNyGUSeVMNhW8g67pRQZNhKwcjwDQT
-        s3SecretKey: FJBLq7iWOBxgNJ2K9aIUnNeu0NfdjWg3FuCZrfvxQtG8yZJ3r8bSrSbN8uebatJX#
+        s3AccessKey: ''
+        s3SecretKey: ''
         s3CacheInsecure: 
   gitlab:
     migrations:

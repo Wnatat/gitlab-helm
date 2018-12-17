@@ -1,4 +1,4 @@
-# Web app on OVH kubernetes
+# Gitlab on small Kubernetes cluster
 
 ## Provision a Kubernetes cluster
 Order and provision a cluster with ovh at this url:
@@ -40,7 +40,10 @@ helm upgrade --install gitlab-small-team .
 	--set gitlab.global.hosts.domain=<your-domain>
 	--set gitlab.global.hosts.externalIP=<ip-address-your-domain-resolves-to>
 	--set gitlab.certmanager-issuer.email=<email-address-for-certificates>
+	--set gitlab.gitlab-runner.runners.cache.s3AccessKey=<some-access-key>
+	--set gitlab.gitlab-runner.runners.cache.s3SecretKey=<some-secret-key>
 	--set grafana.adminPassword=<initial-password-for-monitoring>
 	--set grafana.ingress.hosts=monitoring.<your-domain>
 	--set grafana.ingress.tls.hosts=monitoring.<your-domain>
+
 ```
