@@ -1,0 +1,10 @@
+apiVersion: v1
+version: 0.0.9
+
+name: gitlab-helm
+description: Gitlab for 3-4 users on small kubernetes cluster. Cloud native dockdr based deployments on Gitlab with scalable Gitlab CI runners for every jobs.
+keywords: ["gitlab", "gitlab ci", "ci", "cd", "kubernetes", "gitlab runner"]
+home: https://github.com/Wnatat/gitlab-helm
+maintainers:
+- name: Wnatat
+email: lamerdouille@gmail.com

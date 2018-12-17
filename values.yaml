@@ -1,0 +1,214 @@
+metallb:
+  controller:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 35m
+        memory: 50Mi
+  speaker:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 35m
+        memory: 50Mi
+
+gitlab:
+  global:
+    hosts:
+      domain: ''
+      externalIP: ''
+    minio:
+      enabled: true
+      replicas: 1
+      persistence:
+        size: 2Gi
+
+  certmanager-issuer:
+    email: gitlab@example.com
+
+  nginx-ingress:
+    controller:
+      extraArgs: {}
+      resources:
+        requests:
+          cpu: 10m
+          memory: 40Mi
+      replicaCount: 1
+      minAvailable: 1
+      scope:
+        enabled: false
+    defaultBackend:
+      minAvailable: 1
+      replicaCount: 1
+      resources:
+        requests:
+          cpu: 2m
+          memory: 4Mi
+
+  minio:
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 50m
+  prometheus:
+    resources:
+      limits:
+        cpu: 250m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+    kubeStateMetrics:
+      enabled: true
+      resources:
+        limits:
+          cpu: 10m
+          memory: 16Mi
+        requests:
+          cpu: 10m
+          memory: 16Mi
+    nodeExporter:
+      enabled: true
+      resources:
+        limits:
+          cpu: 200m
+          memory: 50Mi
+        requests:
+          cpu: 25m
+          memory: 30Mi
+
+  postgresql:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+  redis:
+    enabled: true
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 20m
+        memory: 64Mi
+
+  gitlab-runner:
+    rbac:
+      clusterWideAccess: true
+    resources:
+      limits:
+        memory: 512Gi
+        cpu: 500m
+      requests:
+        memory: 128Mi
+        cpu: 50m
+    runners:
+      namespace: gitlab-runner
+      privileged: true
+      cache:
+        cacheType: s3
+        s3BucketName: runner-cache
+        s3ServerAddress: gitlab-minio-svc.gitlab.svc.cluster.local:9000
+        cacheShared: true
+        s3CachePath: gitlab-runner
+        s3AccessKey: JnZ18f9yx590Y2X8iRpiub34lHaBO2GnXxzNyGUSeVMNhW8g67pRQZNhKwcjwDQT
+        s3SecretKey: FJBLq7iWOBxgNJ2K9aIUnNeu0NfdjWg3FuCZrfvxQtG8yZJ3r8bSrSbN8uebatJX#
+        s3CacheInsecure: 
+  gitlab:
+    migrations:
+      image:
+        repository: registry.gitlab.com/gitlab-org/build/cng/gitlab-rails-ce
+    unicorn:
+      image: 
+        repository: registry.gitlab.com/gitlab-org/build/cng/gitlab-unicorn-ce
+      resources:
+        requests:
+          cpu: 50m
+          memory: 384Mi
+      workhorse:
+        image: registry.gitlab.com/gitlab-org/build/cng/gitlab-workhorse-ce
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+    sidekiq:
+      image:
+        repository: registry.gitlab.com/gitlab-org/build/cng/gitlab-sidekiq-ce
+      resources:
+        requests:
+          cpu:  65m
+          memory: 128Mi
+    task-runner: 
+      image:
+        repository: registry.gitlab.com/gitlab-org/build/cng/gitlab-task-runner-ce
+      resources:
+        requests:
+          cpu:  25m
+          memory: 64Mi
+    gitaly:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 100Mi
+      persistence:
+        size: 10Gi
+
+grafana:
+  adminPassword: ''
+
+  ingress:
+    enabled: true
+    annotations: 
+      certmanager.k8s.io/cluster-issuer: "gitlab-review-app-issuer"
+      kubernetes.io/tls-acme: "true"
+      ingress.kubernetes.io/ssl-redirect: "true"
+      kubernetes.io/ingress.class: "gitlab-nginx"
+      kubernetes.io/ingress.provider: "nginx"
+    hosts:
+      - monitoring.gitlab.cluster.walid.ovh
+    tls:
+      - secretName: grafana-tls
+        hosts:
+        - monitoring.gitlab.cluster.walid.ovh
+  resources:
+   limits:
+     cpu: 100m
+     memory: 128Mi
+   requests:
+     cpu: 30m
+     memory: 64Mi
+
+  datasources: 
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://gitlab-prometheus-server.gitlab.svc.cluster.local
+        access: proxy
+        isDefault: true
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+  dashboards:
+   default:
+     prometheus:
+       gnetId: 3131
+       revision: 1
+       datasource: Prometheus
