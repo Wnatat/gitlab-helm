@@ -10,22 +10,22 @@ Configure your domain name to point to one of your nodes.
 ### Open these firewall ports
 
 Priorité | Action | Protocole | IP | Port destination | Options
---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
-0 | 	Autoriser | 	TCP | 	tous |  | 	established
-1 | 	Autoriser | 	TCP | 	tous | 	22 |
-2 | 	Autoriser | 	TCP | 	tous | 	80 |
-3 | 	Autoriser | 	TCP | 	tous | 	443 |
-4 | 	Autoriser | 	UDP | 	tous | 	10000 |
-5 | 	Autoriser | 	ICMP | 	tous |  |
-6 | 	Autoriser | 	TCP | 	tous | 	30260 |
-7 | 	Autoriser | 	TCP | 	tous | 	31148 |
-19 | 	Refuser | 	IPv4 | 	tous |  |
+:---: | :---: | :---: | :---: | :---: | :---: |
+0 | Autoriser | TCP | tous |  | established
+1 | Autoriser | TCP | tous | 22 |
+2 | Autoriser | TCP | tous | 80 |
+3 | Autoriser | TCP | tous | 443 |
+4 | Autoriser |	UDP | tous | 10000 |
+5 | Autoriser |	ICMP | tous |  |
+6 | Autoriser | TCP | tous | 30260 |
+7 |	Autoriser | TCP |	tous | 31148 |
+19 | Refuser | IPv4 | tous |  |
 
 ## Install Helm
 
 Create the rbac rules for tiller:
 ```sh
-kubectl apply -f rbac.yaml
+kubectl apply -f tiller.yaml
 ```
 
 Install tiller:
@@ -102,7 +102,6 @@ build and test:
   artifacts:
     reports:
       junit: ./tmp/test-results/rspec.xml
-    # untracked: true
     paths:
       - ./public/coverage
       - ./tmp/test-results

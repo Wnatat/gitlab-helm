@@ -1,3 +1,6 @@
+acme:
+  email: gitlab@example.com
+
 metallb:
   controller:
     resources:
@@ -164,17 +167,17 @@ grafana:
   ingress:
     enabled: true
     annotations: 
-      certmanager.k8s.io/cluster-issuer: "gitlab-review-app-issuer"
+      certmanager.k8s.io/cluster-issuer: "gitlab-small-team-cluster-issuer"
       kubernetes.io/tls-acme: "true"
       ingress.kubernetes.io/ssl-redirect: "true"
-      kubernetes.io/ingress.class: "gitlab-nginx"
+      kubernetes.io/ingress.class: "gitlab-small-team-nginx"
       kubernetes.io/ingress.provider: "nginx"
     hosts:
       - monitoring.gitlab.cluster.walid.ovh
     tls:
-      - secretName: grafana-tls
-        hosts:
-        - monitoring.gitlab.cluster.walid.ovh
+    - secretName: grafana-tls
+      hosts:
+      - monitoring.gitlab.cluster.walid.ovh
   resources:
    limits:
      cpu: 100m
