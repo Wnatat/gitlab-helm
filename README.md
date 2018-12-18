@@ -50,11 +50,11 @@ helm upgrade --install gitlab-small-team .
 
 # Usage
 
-You can access your gitlab instance at the url `gitlab.<your-domain>`.
+You can access your gitlab instance at the url `https://gitlab.<your-domain>`.
 
-You can monitor your cluster at the url `monitoring.gitlab.<your-domain>`
+You can monitor your cluster at the url `https://monitoring.gitlab.<your-domain>`
 
-You can create a CI pipeline for docker images and Helm charts as shown in the `gitlab-ci.yaml` file.
+You can create a docker images CI pipeline and Helm charts as shown in the `gitlab-ci.yaml` example file below:
 ```yaml
 image: docker:latest
 
@@ -125,12 +125,12 @@ build and test:
         --docker-server="$CI_REGISTRY"
         --namespace="$KUBE_NAMESPACE"
         --dry-run -o yaml | kubectl apply -f -
-    - helm upgrade --install --wait --values=./test-ruby/values.yaml 
+    - helm upgrade --install --wait --values=./<your-chart-folder>/values.yaml 
         --set image.url="$CI_REGISTRY_IMAGE"
         --set image.tag="$CI_PIPELINE_ID"
         --set urlPrefix="$URL_PREFIX"
         --namespace "$KUBE_NAMESPACE"
-        "$CI_ENVIRONMENT_SLUG-$CI_PROJECT_NAME" ./test-ruby
+        "$CI_ENVIRONMENT_SLUG-$CI_PROJECT_NAME" ./<your-chart-folder>
 
 .stop-deploy:
   stage: review app
@@ -145,7 +145,7 @@ review:
     URL_PREFIX: "staging-pr-$CI_COMMIT_REF_NAME.$CI_PROJECT_NAME"
   environment:
     name: review/$CI_COMMIT_REF_NAME
-    url: "https://staging-pr-$CI_COMMIT_REF_NAME.$CI_PROJECT_NAME.cluster.walid.ovh"
+    url: "https://staging-pr-$CI_COMMIT_REF_NAME.$CI_PROJECT_NAME.<your-domain>"
     on_stop: stop review
   except:
     - master
@@ -172,7 +172,7 @@ deploy to staging:
     URL_PREFIX: staging.$CI_PROJECT_NAME
   environment:
     name: staging
-    url: https://staging.$CI_PROJECT_NAME.cluster.walid.ovh
+    url: https://staging.$CI_PROJECT_NAME.<your-domain>
   only:
     refs:
       - master
@@ -186,7 +186,7 @@ deploy to production:
     URL_PREFIX: $CI_PROJECT_NAME
   environment:
     name: production
-    url: https://$CI_PROJECT_NAME.cluster.walid.ovh
+    url: https://$CI_PROJECT_NAME.<your-domain>
   only:
     refs:
       - master
